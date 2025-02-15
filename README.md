@@ -1,2 +1,7 @@
-# IU_Thesis_Project
-Predicting Housing Market Trends Using Data Science
+# Predicting Housing Market Trends Using Data Science
+
+#### Student’s Name: 
+Rosendo Lugo Jr.
+#### Advisor: 
+Dr. Sridhar Ramachandran
+
