@@ -1,5 +1,16 @@
 # Predicting Housing Market Trends Using Data Science
 
+[ [Project Scope](#project-scope) ]  
+[ [Research Plan](#research-plan) ]  
+[ [Research Milestone Timeline](#research-milestone-timeline) ]  
+[ [Acquisition Phase](#acquisition-phase) ]  
+[ [Preparation Phase](#preparation-phase) ]  
+[ [Exploration Phase](#exploration-phase) ]  
+[ [Modeling Phase](#modeling-phase) ]  
+[ [Conclusion](#conclusion) ]  
+[ [Steps to Reproduce](#steps-to-reproduce) ]
+
+
 **Student’s Name:** Rosendo Lugo Jr.
 
 **Advisor:** Dr. Sridhar Ramachandran
@@ -10,7 +21,7 @@
 
 Additionally, the dataset's inclusion of multiple region types allows for comparisons between national trends and city-specific behaviors, providing an opportunity to explore how different real estate markets respond to economic factors. By leveraging machine learning techniques learned from the competitions, I will analyze potential leading indicators of price changes and market cycles.
 
-
+---
 ## Project Scope
 **Objectives:** Identify key trends and patterns in the housing market, predict market fluctuations, and provide actionable insights into real estate trend      
 
@@ -31,8 +42,9 @@ Tasks:
 - Performance evaluation and optimization     
 - Presentation of findings      
 
-**Resources:** Python, Pandas, NumPy, Scikit-Learn, Matplotlib, Seaborn, Jupyter Notebook      
-
+**Resources:** Python, Pandas, NumPy, Scikit-Learn, Matplotlib, Seaborn, Jupyter Notebook  
+    
+---
 ### Research Plan
 **Techniques and Methods:** Time-series analysis, regression models, machine learning techniques, and cross-validation methods.
 Application: Apply time-series forecasting models to predict housing price trends, use feature engineering techniques to identify key drivers of price fluctuations, and validate results using robust evaluation metrics.      
@@ -40,78 +52,93 @@ Application: Apply time-series forecasting models to predict housing price trend
 **Hypothesis**
 - **Hypothesis Statement:** Housing market trends can be predicted by analyzing historical price fluctuations, inventory changes, and sales patterns. By applying machine learning techniques, we can identify early indicators of market shifts, allowing for better-informed real estate investment decisions.
 
-
+[Back to Top](#predicting-housing-market-trends-using-data-science)
+    
+---
 ### Research Milestone Timeline
-Week 1:      
-- Tasks:     
-    - Collect and download the dataset.      
-    - Perform initial data cleaning and preprocessing.      
-    - Goal: Establish a clean and structured dataset ready for exploratory analysis. 
+<details>
+  <summary>Show Research Milestone Timeline</summary>
+    
+#### **Week 1:**    
+- **Tasks:**  
+  - Collect and download the dataset.  
+  - Perform initial data cleaning and preprocessing.  
+- **Goal:** Establish a clean and structured dataset ready for exploratory analysis.  
 
-Week 2:    
-- Tasks:        
-    - Conduct exploratory data analysis (EDA).       
-    - Generate visualizations to understand market trends.      
-- Goal: Identify key patterns and trends in housing data.
+#### **Week 2:**    
+- **Tasks:**  
+  - Conduct exploratory data analysis (EDA).  
+  - Generate visualizations to understand market trends.  
+- **Goal:** Identify key patterns and trends in housing data.  
 
-Week 3:      
-- Tasks: 
-    - Perform feature engineering.
-    - Handle missing values and outliers.
-- Goal: Prepare a well-structured dataset for modeling.
+#### **Week 3:**    
+- **Tasks:**  
+  - Perform feature engineering.  
+  - Handle missing values and outliers.  
+- **Goal:** Prepare a well-structured dataset for modeling.  
 
-Week 4:   
-- Tasks:     
-    - Select baseline models for initial testing.     
-    - Train and evaluate simple models.      
-- Goal: Identify the best initial modeling approach.     
+#### **Week 4:**   
+- **Tasks:**  
+  - Select baseline models for initial testing.  
+  - Train and evaluate simple models.  
+- **Goal:** Identify the best initial modeling approach.  
 
-Week 5:
-- Tasks: 
-    - Experiment with advanced models, including ensemble learning.      
-    - Tune hyperparameters for improved performance.       
-- Goal: Optimize predictive models for accuracy and robustness.
+#### **Week 5:**    
+- **Tasks:**  
+  - Experiment with advanced models, including ensemble learning.  
+  - Tune hyperparameters for improved performance.  
+- **Goal:** Optimize predictive models for accuracy and robustness.  
 
-Week 6:
-- Tasks: 
-    - Implement time-series forecasting techniques.     
-    - Compare results against baseline models.     
-- Goal: Refine models based on forecasting effectiveness.
+#### **Week 6:**    
+- **Tasks:**  
+  - Implement time-series forecasting techniques.  
+  - Compare results against baseline models.  
+- **Goal:** Refine models based on forecasting effectiveness.  
 
-Week 7:
-- Tasks: 
-    - Validate models using cross-validation techniques.       
-    - Ensure stability and reliability of predictions.     
-- Goal: Improve generalizability of the final models.
+#### **Week 7:**    
+- **Tasks:**  
+  - Validate models using cross-validation techniques.  
+  - Ensure stability and reliability of predictions.  
+- **Goal:** Improve generalizability of the final models.  
 
-Week 8:
-- Tasks: 
-    - Interpret model predictions.     
-    - Extract actionable insights from the analysis.      
-- Goal: Understand key factors driving housing market trends.
+#### **Week 8:**    
+- **Tasks:**  
+  - Interpret model predictions.  
+  - Extract actionable insights from the analysis.  
+- **Goal:** Understand key factors driving housing market trends.  
 
-Week 9:
-- Tasks: 
-    - Finalize all results and conclusions.       
-    - Start drafting the final report.       
-- Goal: Synthesize research findings into a structured format.
+#### **Week 9:**    
+- **Tasks:**  
+  - Finalize all results and conclusions.  
+  - Start drafting the final report.  
+- **Goal:** Synthesize research findings into a structured format.  
 
-Week 10:
-- Tasks: 
-    - Complete and refine the final report.      
-    - Prepare any necessary visual presentations.     
-- Goal: Submit a well-documented research project with clear insights.
+#### **Week 10:**    
+- **Tasks:**  
+  - Complete and refine the final report.  
+  - Prepare any necessary visual presentations.  
+- **Goal:** Submit a well-documented research project with clear insights.  
 
+</details>
+
+---
 ### Potential Scope Creep
 - Challenges and Mitigation Strategies: 
     - Data quality issues → Implement thorough preprocessing and validation checks.       
     - Model complexity → Prioritize interpretability over excessive optimization.       
-    - Expanding scope → Stick to predefined research objectives and avoid unnecessary additions.      
+    - Expanding scope → Stick to predefined research objectives and avoid unnecessary additions.  
+    
+[Back to Top](#predicting-housing-market-trends-using-data-science)
 
+---
+    
 ## Acquisition Phase
-- Data acquired from href="https://www.redfin.com/news/data-center/" target="_blank">Redfin Monthly Housing Market Data</a>
+- Data acquired from <a href="https://www.redfin.com/news/data-center/" target="_blank">Redfin Monthly Housing Market Data</a>
 - 1099 rows x 15 columns
-
+    
+[Back to Top](#predicting-housing-market-trends-using-data-science)
+    
+---
 ## Preparation Phase
 - Clean the data
     - Rename columns
@@ -125,11 +152,28 @@ Week 10:
         - remove space before and after the name
     - Remove nulls
         - 0% null
-
+    
+[Back to Top](#predicting-housing-market-trends-using-data-science)
+    
+---
 ## Exploration Phase
 
+    
+[Back to Top](#predicting-housing-market-trends-using-data-science)
+    
+---
 ## Modeling Phase
 
+
+[Back to Top](#predicting-housing-market-trends-using-data-science)
+    
+---
+## Conclusion
+
+
+[Back to Top](#predicting-housing-market-trends-using-data-science)
+    
+---
 ## Steps to Reproduce
 
 To set up the environment and run this project, follow these steps:
@@ -164,3 +208,5 @@ This method uses a pre-cleaned dataset for quick execution.
     jupyter lab
 5.  Run the Notebook
 - Execute all cells in thesis_project.ipynb to complete data processing.
+    
+[Back to Top](#predicting-housing-market-trends-using-data-science)
