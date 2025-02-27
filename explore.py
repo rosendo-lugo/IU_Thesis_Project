@@ -18,6 +18,7 @@ import seaborn as sns
 from statsmodels.tsa.seasonal import seasonal_decompose
 
 # Stats
+from scipy.stats.mstats import winsorize
 from scipy import stats
 from scipy.stats import ttest_ind
 from scipy.stats import chi2_contingency
@@ -278,4 +279,149 @@ def plot_correlation_heatmap(df, columns=None, figsize=(16, 12), cmap='coolwarm'
     sns.heatmap(corr, annot=True, cmap=cmap)
     plt.title('Correlation Matrix')
     plt.show()
+    
 # ----------------------------------------------------------------------------------
+    
+'''
+*------------------*
+|                  |
+|     OUTLIERS     |
+|                  |
+*------------------*
+'''
+# ----------------------------------------------------------------------------------
+def detect_outliers_iqr(df):
+    """
+    Identifies outliers using the IQR method.
+
+    Parameters:
+        df (pd.DataFrame): The dataset to analyze.
+
+    Returns:
+        pd.Series: A count of outliers for each numerical column.
+    """
+    # Identify numerical columns
+    numerical_cols = df.select_dtypes(include=[np.number]).columns
+
+    # Compute IQR for each numerical column
+    Q1 = df[numerical_cols].quantile(0.25)
+    Q3 = df[numerical_cols].quantile(0.75)
+    IQR = Q3 - Q1
+
+    # Identify outliers using the 1.5*IQR rule
+    outliers = ((df[numerical_cols] < (Q1 - 1.5 * IQR)) | (df[numerical_cols] > (Q3 + 1.5 * IQR))).sum()
+
+    return outliers
+
+# ----------------------------------------------------------------------------------
+
+def visualize_outliers(df):
+    """
+    Generates boxplots for visualizing outliers in selected numerical columns.
+
+    Parameters:
+        df (pd.DataFrame): The dataset to analyze.
+        outlier_cols (list): List of column names to visualize.
+
+    Returns:
+        None (Displays the boxplot)
+    """
+    plt.figure(figsize=(12, 8))
+    df[outlier_cols].boxplot(rot=45)
+    plt.title("Boxplot of Columns with Significant Outliers")
+    plt.show()
+    
+# ----------------------------------------------------------------------------------
+def apply_winsorization(df, outlier_cols, limits=(0.05, 0.05)):
+    """
+    Applies Winsorization (capping extreme values) to specified columns and visualizes the results.
+
+    Parameters:
+        df (pd.DataFrame): The dataset to modify.
+        outlier_cols (list): List of columns to apply Winsorization.
+        limits (tuple): Percentage of values to cap on both ends (default: 5% on both sides).
+
+    Returns:
+        pd.DataFrame: A new DataFrame with Winsorized values.
+    """
+    df_winsorized = df.copy()
+    
+    for col in outlier_cols:
+        df_winsorized[col] = winsorize(df[col], limits=limits)  # Apply Winsorization
+    
+    # Generate boxplot to confirm changes
+    plt.figure(figsize=(12, 8))
+    df_winsorized[outlier_cols].boxplot(rot=45)
+    plt.title("Boxplot After Winsorization")
+    plt.show()
+    
+    return df_winsorized
+
+# ----------------------------------------------------------------------------------
+def plot_correlation_heatmap(df, figsize=(12, 8), cmap="coolwarm"):
+    """
+    Generates a heatmap to visualize the correlation matrix of a dataset.
+
+    Parameters:
+        df (pd.DataFrame): The dataset to analyze.
+        figsize (tuple): Figure size (default: (12, 8)).
+        cmap (str): Colormap for visualization (default: "coolwarm").
+
+    Returns:
+        None (Displays the heatmap)
+    """
+    correlation_matrix = df.corr()  # Compute correlation matrix
+    
+    plt.figure(figsize=figsize)
+    sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap=cmap, linewidths=0.5)
+    plt.title("Feature Correlation Matrix")
+    plt.show()
+
+# ----------------------------------------------------------------------------------
+'''
+*------------------*
+|                  |
+|   FEATURE ENG    |
+|                  |
+*------------------*
+'''
+# ----------------------------------------------------------------------------------
+def create_features(df):
+    """
+    Performs feature engineering by creating a market demand ratio 
+    and categorizing days on market.
+
+    Parameters:
+        df (pd.DataFrame): The dataset to modify.
+
+    Returns:
+        pd.DataFrame: A new DataFrame with additional engineered features.
+    """
+    df = df.copy()
+    
+    # Create market demand ratio (homes sold per new listing)
+    df["market_demand_ratio"] = df["homes_sold"] / df["new_listings"]
+    
+    # Categorize days on market into bins
+    df["days_on_market_category"] = pd.cut(
+        df["days_on_market"],
+        bins=[0, 15, 30, 100],
+        labels=["Fast", "Moderate", "Slow"]
+    )
+    
+    return df
+
+# ----------------------------------------------------------------------------------
+def drop_redundant_features(df, columns_to_drop):
+    """
+    Drops specified redundant features from the dataset.
+
+    Parameters:
+        df (pd.DataFrame): The dataset to modify.
+        columns_to_drop (list): List of column names to remove.
+
+    Returns:
+        pd.DataFrame: A new DataFrame with selected columns removed.
+    """
+    df_reduced = df.drop(columns=columns_to_drop, errors="ignore")  # Avoids errors if column not found
+    return df_reduced
