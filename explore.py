@@ -39,41 +39,35 @@ print('imports loaded successfully, awaiting commands...')
 *------------------*
 '''
 # ----------------------------------------------------------------------------------
-# a function that show a summary of the dataset
 def data_summary(df):
     # Print the shape of the DataFrame
-    print(f'data shape: {df.shape}')
-    # set all the columns names to a lowercase
+    print(f'Data shape: {df.shape}')
+    
+    # Set all column names to lowercase
     df.columns = df.columns.str.lower()
-    # Separate numeric and non-numeric describes, merging them later:
+    
+    # Separate numeric and non-numeric descriptions
     desc_numeric = df.select_dtypes(include='number').describe()
-    desc_object  = df.select_dtypes(exclude='number').describe(datetime_is_numeric=False)
+    desc_object = df.select_dtypes(exclude='number').describe()
+    
     # Create a summary DataFrame
     summary = pd.DataFrame(df.dtypes, columns=['data type'])
+    
     # Calculate the number of missing values
-    summary['#missing'] = df.isnull().sum().values 
-    # Calculate the percentage of missing values
-    summary['%missing'] = df.isnull().sum().values / len(df)* 100
+    summary['#missing'] = df.isnull().sum().values
+    summary['%missing'] = (df.isnull().sum().values / len(df)) * 100
+    
     # Calculate the number of unique values
     summary['#unique'] = df.nunique().values
-    # Create a descriptive DataFrame
-    desc = pd.DataFrame(df.describe(include='all', datetime_is_numeric=True).transpose())
-    # Add the minimum, maximum, and first three values to the summary DataFrame
-    summary['count'] = desc['count'].values
-    summary['mean'] = desc['mean'].values
-    summary['std'] = desc['std'].values
-    summary['min'] = desc['min'].values
-    summary['25%'] = desc['25%'].values
-    summary['50%'] = desc['50%'].values
-    summary['75%'] = desc['75%'].values
-    summary['max'] = desc['max'].values
-    # summary['head(1)'] = df.loc[0].values
-    # summary['head(2)'] = df.loc[1].values
-    # summary['head(3)'] = df.loc[2].values
     
-    # Return the summary DataFrame
-    return summary
+    # Create a descriptive DataFrame **without** datetime_is_numeric
+    desc = df.describe(include='all').transpose()
+    
+    # Add statistical information to summary
+    for col in ['count', 'mean', 'std', 'min', '25%', '50%', '75%', 'max']:
+        summary[col] = desc[col].values if col in desc.columns else None
 
+    return summary
 # ----------------------------------------------------------------------------------
 def bivariate_boxplot(df, numerical_cols, categorical_cols):
     """
@@ -243,43 +237,29 @@ def plot_seasonal_decomposition(df, date_col='month_of_period_end', target_col='
     decomposition.plot()
     plt.show()
 # ----------------------------------------------------------------------------------
-def plot_correlation_heatmap(df, columns=None, figsize=(16, 12), cmap='coolwarm'):
+def plot_correlation_heatmap(df, figsize=(12, 8), cmap="coolwarm"):
     """
-    Plots a correlation matrix heatmap for the specified columns in the DataFrame.
+    Generates a heatmap to visualize the correlation matrix of a dataset.
 
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        The DataFrame containing your data.
-    columns : list of str, optional
-        A list of column names to include in the correlation matrix. 
-        If None, uses all columns. (default None)
-    figsize : tuple, optional
-        The size of the figure, e.g. (width, height). (default (16, 12))
-    cmap : str, optional
-        The color map to use for the heatmap. (default 'coolwarm')
+    Args:
+        df (pd.DataFrame): The input dataset.
+        figsize (tuple): The figure size for the heatmap.
+        cmap (str): The colormap for the heatmap.
 
-    Returns
-    -------
-    None
-        Displays a heatmap of the correlation matrix.
+    Returns:
+        None (Displays the heatmap)
     """
-    
-    # If specific columns are provided, use them; otherwise, use all columns
-    if columns is not None:
-        data = df[columns]
-    else:
-        data = df
-    
+    # Drop non-numeric columns
+    redfin_numeric = df.select_dtypes(include=['number'])
+
     # Compute correlation matrix
-    corr = data.corr()
-    
-    # Plot
+    correlation_matrix = redfin_numeric.corr()
+
+    # Plot heatmap
     plt.figure(figsize=figsize)
-    sns.heatmap(corr, annot=True, cmap=cmap)
-    plt.title('Correlation Matrix')
-    plt.show()
-    
+    sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap=cmap, linewidths=0.5)
+    plt.title("Correlation Heatmap")
+    plt.show()    
 # ----------------------------------------------------------------------------------
     
 '''
@@ -315,7 +295,7 @@ def detect_outliers_iqr(df):
 
 # ----------------------------------------------------------------------------------
 
-def visualize_outliers(df):
+def visualize_outliers(df, outlier_cols):
     """
     Generates boxplots for visualizing outliers in selected numerical columns.
 
@@ -358,7 +338,7 @@ def apply_winsorization(df, outlier_cols, limits=(0.05, 0.05)):
     return df_winsorized
 
 # ----------------------------------------------------------------------------------
-def plot_correlation_heatmap(df, figsize=(12, 8), cmap="coolwarm"):
+def plot_feature_correlation_heatmap(df, figsize=(12, 8), cmap="coolwarm"):
     """
     Generates a heatmap to visualize the correlation matrix of a dataset.
 
