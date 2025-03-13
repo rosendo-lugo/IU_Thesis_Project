@@ -16,6 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from statsmodels.tsa.seasonal import seasonal_decompose
+from pandas.plotting import lag_plot
 
 # Stats
 from scipy.stats.mstats import winsorize
@@ -236,6 +237,50 @@ def plot_seasonal_decomposition(df, date_col='month_of_period_end', target_col='
     # Plot the results
     decomposition.plot()
     plt.show()
+
+# ----------------------------------------------------------------------------------
+def plot_price_trends_and_seasonality(df, date_col='month_of_period_end', target_col='median_sale_price', 
+                                      model='multiplicative', period=12):
+    """
+    Plots the median sale price over time and performs seasonal decomposition to analyze trends.
+
+    Parameters:
+    -----------
+    df : pandas.DataFrame
+        The DataFrame containing the housing data.
+    date_col : str
+        The name of the date column (assumed to be already formatted as datetime).
+    price_col : str
+        The name of the price column.
+    model : {'additive', 'multiplicative'}
+        The type of seasonal component (default is 'multiplicative').
+    period : int
+        The seasonal period (default is 12 for monthly data).
+
+    Returns:
+    --------
+    None
+        Displays a time-series plot and a decomposition plot with trend, seasonal, and residual components.
+    """
+
+    # Time-Series Plot: Average Price Over Time
+    plt.figure(figsize=(12, 6))
+    sns.lineplot(x=df[date_col], y=df[target_col], marker="o")
+    plt.xlabel("Date")
+    plt.ylabel("Median Sale Price")
+    plt.title("Average Price Over Time")
+    plt.xticks(rotation=45)
+    plt.show()
+
+    # Ensure the date_col is set as the DataFrame index
+    df_ts = df.set_index(date_col).sort_index()
+    
+    # Perform seasonal decomposition
+    decomposition = seasonal_decompose(df_ts[target_col], model=model, period=period)
+
+    # Plot the decomposition results
+    decomposition.plot()
+    plt.show()
 # ----------------------------------------------------------------------------------
 def plot_correlation_heatmap(df, figsize=(12, 8), cmap="coolwarm"):
     """
@@ -261,7 +306,32 @@ def plot_correlation_heatmap(df, figsize=(12, 8), cmap="coolwarm"):
     plt.title("Correlation Heatmap")
     plt.show()    
 # ----------------------------------------------------------------------------------
-    
+
+def plot_lag(df, target_col='median_sale_price', lag=1):
+    """
+    Generates a lag plot to analyze the predictability of the target variable based on past values.
+
+    Parameters:
+    -----------
+    df : pandas.DataFrame
+        The DataFrame containing the housing data.
+    target_col : str, optional
+        The column to be analyzed (default is 'median_sale_price').
+    lag : int, optional
+        The lag value for comparison (default is 1, meaning t vs. t+1).
+
+    Returns:
+    --------
+    None
+        Displays a lag plot showing the relationship between past and current values of the target variable.
+    """
+
+    plt.figure(figsize=(12, 10))
+    lag_plot(df[target_col], lag=lag)
+    plt.title(f"Lag Plot of {target_col} (Lag={lag})")
+    plt.show()
+
+# ----------------------------------------------------------------------------------   
 '''
 *------------------*
 |                  |
