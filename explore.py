@@ -102,9 +102,6 @@ def bivariate_boxplot(df, numerical_cols, categorical_cols):
         Displays the generated boxplots.
     """
 
-    # Create quartile-based 'price_bin' for the target column
-    df['price_bin'] = pd.qcut(df['median_sale_price'], q=4, 
-                              labels=['Low','Medium','High','Very High'])
     
     # 1) Numeric columns: Boxplot with price_bin on x-axis, numeric col on y-axis
     for col in numerical_cols:
