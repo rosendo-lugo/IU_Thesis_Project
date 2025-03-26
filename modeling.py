@@ -6,9 +6,10 @@
 *------------------*
 '''
 
- # ----------------------------------------------------------------------------------  
-import numpy as np
+# ----------------------------------------------------------------------------------  
+# Import necessary libraries
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
@@ -26,6 +27,11 @@ from sklearn.feature_selection import RFE, VarianceThreshold
 from sklearn.preprocessing import StandardScaler
 from xgboost import XGBRegressor
 from lightgbm import LGBMRegressor
+from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
+from sklearn.metrics import mean_squared_error, mean_absolute_percentage_error
+from prophet import Prophet
+
 
 # ---------------------------------------------------------------------------------- 
 def preprocess_data(df, target):
@@ -315,7 +321,128 @@ def train_and_evaluate_models(X_train, X_test, y_train, y_test):
 
     return pd.DataFrame(results)
 
+# ----------------------------------time-series forecasting------------------------------------------------ 
+
+# Function to plot time series data
+def plot_time_series(data):
+    plt.figure(figsize=(12, 5))
+    plt.plot(data, label="Median Sale Price", color='blue')
+    plt.title("Time Series of Median Sale Price")
+    plt.xlabel("Date")
+    plt.ylabel("Price")
+    plt.legend()
+    plt.show()
+
 # ---------------------------------------------------------------------------------- 
+ # Function to determine ARIMA parameters using ACF and PACF plots
+def plot_acf_pacf(data):
+    fig, axes = plt.subplots(1, 2, figsize=(14, 4))
+    plot_acf(data, ax=axes[0])  # Autocorrelation function plot
+    plot_pacf(data, ax=axes[1], method="ywm")  # Partial autocorrelation function plot
+    plt.show()
+
+# ---------------------------------------------------------------------------------- 
+# Function to implement ARIMA model
+def train_arima(data, p=2, d=1, q=2, forecast_steps=12):
+    model = ARIMA(data, order=(p, d, q))
+    arima_result = model.fit()
+    forecast = arima_result.forecast(steps=forecast_steps)
+    
+    # Plot ARIMA forecast
+    plt.figure(figsize=(12, 5))
+    plt.plot(data, label="Actual Prices", color='blue')
+    plt.plot(pd.date_range(data.index[-1], periods=forecast_steps+1, freq='M')[1:], forecast, label="ARIMA Forecast", linestyle='dashed', color='red')
+    plt.title("ARIMA Forecast for Median Sale Price")
+    plt.xlabel("Date")
+    plt.ylabel("Price")
+    plt.legend()
+    plt.show()
+
+    return arima_result, forecast
+
+# ---------------------------------------------------------------------------------- 
+# Function to evaluate model performance
+def evaluate_forecast(actual_values, predicted_values):
+    rmse = np.sqrt(mean_squared_error(actual_values, predicted_values))
+    mape = mean_absolute_percentage_error(actual_values, predicted_values)
+    return rmse, mape
+
+# ---------------------------------------------------------------------------------- 
+def prophet_model(data, periods=12):
+    """
+    Trains a Prophet model on time series data and evaluates its forecast accuracy.
+    
+    Parameters:
+        data (pd.Series): Time series with datetime index and numeric values.
+        periods (int): Number of future months to forecast.
+        
+    Returns:
+        forecast_df (pd.DataFrame): Forecasted values.
+        rmse (float): Root Mean Squared Error over the last 12 months.
+        mape (float): Mean Absolute Percentage Error over the last 12 months.
+    """
+    # Prepare data for Prophet
+    df_prophet = data.reset_index()
+    df_prophet.columns = ['ds', 'y']
+    df_prophet['ds'] = df_prophet['ds'].dt.tz_localize(None)
+
+    # Train model
+    prophet_model = Prophet()
+    prophet_model.fit(df_prophet)
+
+    # Forecast
+    future = prophet_model.make_future_dataframe(periods=periods, freq='M')
+    forecast_prophet = prophet_model.predict(future)
+
+    # Plot forecast
+    prophet_model.plot(forecast_prophet)
+    plt.title("Prophet Forecast for Median Sale Price")
+    plt.xlabel("Date")
+    plt.ylabel("Price")
+    plt.show()
+
+    # Evaluate only if enough actuals exist
+    if len(data) >= periods:
+        actual_values = data.iloc[-periods:].values.flatten()
+        predicted_values = forecast_prophet[['ds', 'yhat']].set_index('ds').iloc[-periods:]['yhat'].values
+        rmse_prophet = np.sqrt(mean_squared_error(actual_values, predicted_values))
+        mape_prophet = mean_absolute_percentage_error(actual_values, predicted_values)
+    else:
+        rmse, mape = None, None
+
+    return forecast_prophet, rmse_prophet, mape_prophet
+
+# ---------------------------------------------------------------------------------- 
+
+# ----------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------- 
+
+
+# ---------------------------------------------------------------------------------- 
+
+
+# ---------------------------------------------------------------------------------- 
+
+
+
+# ---------------------------------------------------------------------------------- 
+
+
+# ---------------------------------------------------------------------------------- 
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
